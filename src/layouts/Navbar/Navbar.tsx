@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 
 const navVariants: Variants = {
-  hidden: { y: -50, opacity: 0 },
+  hidden: { y: -50, opacity: 0 }, 
   visible: {
     y: 0,
     opacity: 1,
