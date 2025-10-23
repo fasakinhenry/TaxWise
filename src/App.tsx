@@ -1,9 +1,23 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import routes from './utils/router';
+import Navbar from './layouts/Navbar/Navbar';
+import Footer from './layouts/Footer/Footer';
+
 function App() {
   return (
-    <div className='flex flex-col items-center justify-center w-full h-screen gap-4'>
-      <h1 className='text-2xl font-bold'>TaxWise Application</h1>
-      <p>Welcome to the TaxWise application built with Vite and React!</p>
-    </div>
+    <Router>
+      <div className='min-h-screen bg-gray-50 text-gray-900 flex flex-col'>
+        <Navbar />
+        <main className='flex-grow'>
+          <Routes>
+            {routes.map((route, index) => (
+              <Route key={index} path={route.path} element={route.element} />
+            ))}
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 
