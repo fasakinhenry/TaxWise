@@ -1,8 +1,9 @@
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FaRobot } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 
-const navVariants = {
+const navVariants: Variants = {
   hidden: { y: -50, opacity: 0 },
   visible: {
     y: 0,
@@ -21,11 +22,11 @@ const Navbar: React.FC = () => {
       variants={navVariants}
       initial='hidden'
       animate='visible'
-      className='fixed top-0 left-0 w-full bg-white shadow-md z-10 py-4 px-6 flex justify-between items-center'
+      className='w-full bg-white shadow-md z-10 py-4 px-6 flex justify-between items-center'
     >
       <Link to='/' className='flex items-center text-xl font-bold'>
         <FaRobot className='mr-2 text-blue-600' />
-        TaxBot NG
+        TaxWise
       </Link>
       <ul className='flex space-x-6'>
         <motion.li variants={linkVariants} whileHover='hover'>
