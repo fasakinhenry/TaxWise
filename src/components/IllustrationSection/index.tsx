@@ -1,7 +1,7 @@
-const IllustrationSection = () => {
-  return (
-    <div>IllustrationSection</div>
-  )
-}
+import Water from '../illustrations/Water';
 
-export default IllustrationSection
+const IllustrationSection = () => {
+  return <div className='relative w-full h-96'>IllustrationSection</div>;
+};
+
+export default IllustrationSection;
