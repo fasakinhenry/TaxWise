@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ArrowDown } from 'lucide-react';
+import Arrow from '../icons/Arrow';
 
 const green = '#108a00';
-const DURATION = 0.9; // slightly longer for smoother animation
-const STAGGER = 0.15; // increase delay between word animations
+const DURATION = 0.9;
+const STAGGER = 0.15;
 
 const Hero: React.FC = () => {
   const sentences = [
@@ -108,8 +109,8 @@ const Hero: React.FC = () => {
               setInputActive(false);
             }}
           />
-          <button className='bg-[#108a00] text-white px-6 py-3 rounded-md hover:opacity-90 transition tracking-widest uppercase text-sm cursor-pointer'>
-            Search
+          <button className='bg-[#108a00] text-white px-6 py-3 rounded-md hover:opacity-90 transition tracking-widest uppercase text-sm cursor-pointer flex items-center gap-1'>
+            Search <Arrow alt='Arrow' color='#fff' />
           </button>
         </div>
 
