@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ArrowDown } from 'lucide-react';
 
 const green = '#108a00';
-const DURATION = 0.6; // slightly longer for smoother animation
+const DURATION = 0.9; // slightly longer for smoother animation
 const STAGGER = 0.15; // increase delay between word animations
 
 const Hero: React.FC = () => {

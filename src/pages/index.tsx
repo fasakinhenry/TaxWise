@@ -1,6 +1,6 @@
-import StripLines from './../components/StripLines/StripLines';
+import StripLines from '../components/StripLines';
 import Navbar from '../layouts/Navbar/Navbar';
-import Hero from '../components/Hero/Hero';
+import Hero from '../components/Hero';
 
 const LandingPage: React.FC = () => {
   return (
