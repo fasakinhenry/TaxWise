@@ -1,11 +1,11 @@
 const Road = () => (
   <svg
     xmlns='http://www.w3.org/2000/svg'
-    width='1623'
-    height='27'
+    width='100%'
     viewBox='0 0 1623 27'
     fill='none'
-    className="w-full "
+    preserveAspectRatio='xMinYMid meet'
+    className='object-cover'
   >
     <rect width='1623' height='27' fill='#384D4E' />
     <rect x='21' y='11.8535' width='40' height='3' fill='#D9D9D9' />

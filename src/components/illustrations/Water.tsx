@@ -1,10 +1,11 @@
-const Water = () => {
+const Water = () => (
   <svg
     xmlns='http://www.w3.org/2000/svg'
-    width='1517'
-    height='91'
+    width='100%'
     viewBox='0 0 1517 91'
     fill='none'
+    preserveAspectRatio='xMinYMid meet'
+    className='object-cover'
   >
     <rect y='27' width='1517' height='64' fill='#99C8FF' />
     <rect width='1201' height='11' fill='#038B5C' />
@@ -176,7 +177,7 @@ const Water = () => {
       height='11.3191'
       fill='#015035'
     />
-  </svg>;
-};
+  </svg>
+);
 
 export default Water;
