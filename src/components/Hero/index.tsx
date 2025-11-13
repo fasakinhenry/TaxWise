@@ -92,26 +92,29 @@ const Hero: React.FC = () => {
         </div>
 
         {/* SEARCH BAR */}
-        <div className='flex justify-center items-center gap-3 mb-10 uppercase tracking-[0.08em]'>
-          <input
-            type='text'
-            placeholder={inputActive ? '' : text}
-            className={`w-full max-w-xl rounded-md px-4 py-3 transition-all duration-200 ${
-              inputActive
-                ? 'bg-white border border-gray-300 text-gray-800'
-                : 'bg-[#e9e9e9] text-gray-700 placeholder-gray-500'
-            } focus:outline-none`}
-            onFocus={() => {
-              setInputActive(true);
-              setText('');
-            }}
-            onBlur={() => {
-              setInputActive(false);
-            }}
-          />
-          <button className='bg-[#108a00] text-white px-6 py-3 rounded-md hover:opacity-90 transition tracking-widest uppercase text-sm cursor-pointer flex items-center gap-1'>
-            Search <Arrow alt='Arrow' color='#fff' />
-          </button>
+        <div className='w-full max-w-2xl mx-auto mb-10 uppercase tracking-[0.08em]'>
+          <div className='flex flex-col sm:flex-row items-center gap-3'>
+            <input
+              type='text'
+              placeholder={inputActive ? '' : text}
+              className={`w-full rounded-md px-4 py-3 transition-all duration-200 ${
+                inputActive
+                  ? 'bg-white border border-gray-300 text-gray-800'
+                  : 'bg-[#e9e9e9] text-gray-700 placeholder-gray-500'
+              } focus:outline-none`}
+              onFocus={() => {
+                setInputActive(true);
+                setText('');
+              }}
+              onBlur={() => {
+                setInputActive(false);
+              }}
+            />
+
+            <button className='w-full sm:w-auto bg-[#108a00] text-white px-6 py-3 rounded-md hover:opacity-90 transition tracking-widest uppercase text-sm cursor-pointer flex items-center justify-center gap-1'>
+              Search <Arrow alt='Arrow' color='#fff' />
+            </button>
+          </div>
         </div>
 
         {/* CAROUSEL */}
