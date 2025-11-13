@@ -1,10 +1,16 @@
-const Building = () => (
+type BuildingProps = {
+  className?: string;
+};
+
+const Building = ({ className }: BuildingProps) => (
   <svg
-    width='431'
-    height='303'
+    width='100%'
+    height='auto'
     viewBox='0 0 431 303'
     fill='none'
     xmlns='http://www.w3.org/2000/svg'
+    preserveAspectRatio='xMidYMid meet'
+    className={`${className ?? ''} w-full h-auto`}
   >
     <path
       d='M0 22.02L56.5 0.519989H227H431L385 280.52L0 295.52V22.02Z'

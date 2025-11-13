@@ -55,7 +55,7 @@ const Hero: React.FC = () => {
   ];
 
   return (
-    <section className='py-20 bg-white text-center'>
+    <section className='py-15 bg-white text-center px-2'>
       <div className='max-w-6xl mx-auto px-4'>
         {/* HERO TITLE */}
         <div className='mb-12'>

@@ -1,52 +1,11 @@
-import { Road, Building } from '../illustrations';
+import { Road, Water, Building } from '../illustrations';
 
 const IllustrationSection = () => {
-  const waterSvg = `
-  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1517 91' fill='none'>
-    <rect y='27' width='1517' height='64' fill='#99C8FF' />
-    <rect width='1201' height='11' fill='#038B5C' />
-    <rect x='26.6809' y='11.2339' width='10.5106' height='23.4468' fill='#02764E' />
-    <rect x='22.6383' y='34.6807' width='19.4043' height='11.3191' fill='#015035' />
-    <rect x='52.5532' y='11.2339' width='10.5106' height='20.2128' fill='#02764E' />
-    <rect x='48.5106' y='31.4468' width='19.4043' height='11.3191' fill='#015035' />
-    <rect x='153.958' y='11.2339' width='10.5106' height='23.4468' fill='#02764E' />
-    <rect x='149.915' y='34.6807' width='19.4043' height='11.3191' fill='#015035' />
-    <rect x='179.83' y='11.2339' width='10.5106' height='20.2128' fill='#02764E' />
-    <rect x='175.787' y='31.4468' width='19.4043' height='11.3191' fill='#015035' />
-    <rect x='281.234' y='11.2339' width='10.5106' height='23.4468' fill='#02764E' />
-    <rect x='277.192' y='34.6807' width='19.4043' height='11.3191' fill='#015035' />
-    <rect x='307.106' y='11.2339' width='10.5106' height='20.2128' fill='#02764E' />
-    <rect x='303.064' y='31.4468' width='19.4043' height='11.3191' fill='#015035' />
-    <rect x='408.51' y='11.2339' width='10.5106' height='23.4468' fill='#02764E' />
-    <rect x='404.468' y='34.6807' width='19.4043' height='11.3191' fill='#015035' />
-    <rect x='434.383' y='11.2339' width='10.5106' height='20.2128' fill='#02764E' />
-    <rect x='430.34' y='31.4468' width='19.4043' height='11.3191' fill='#015035' />
-    <rect x='535.787' y='11.2339' width='10.5106' height='23.4468' fill='#02764E' />
-    <rect x='531.745' y='34.6807' width='19.4043' height='11.3191' fill='#015035' />
-    <rect x='561.66' y='11.2339' width='10.5106' height='20.2128' fill='#02764E' />
-    <rect x='557.617' y='31.4468' width='19.4043' height='11.3191' fill='#015035' />
-    <rect x='663.064' y='11.2339' width='10.5106' height='23.4468' fill='#02764E' />
-    <rect x='659.021' y='34.6807' width='19.4043' height='11.3191' fill='#015035' />
-    <rect x='688.936' y='11.2339' width='10.5106' height='20.2128' fill='#02764E' />
-    <rect x='684.894' y='31.4468' width='19.4043' height='11.3191' fill='#015035' />
-  </svg>`;
-
-  const waterDataUri = `data:image/svg+xml;utf8,${encodeURIComponent(
-    waterSvg
-  )}`;
-
-  const waterStyle: React.CSSProperties = {
-    backgroundImage: `url("${waterDataUri}")`,
-    backgroundRepeat: 'repeat-x',
-    backgroundPosition: 'bottom',
-    backgroundSize: 'auto 100%',
-  };
-
   return (
-    <div className='relative w-full h-[300px] overflow-hidden mb-5'>
+    <div className='relative w-full min-h-[150px] overflow-y-visible mb-5 max-h-[300px]'>
       {/* Building: bottom-right, behind the road (lower z) */}
-      <div className='absolute bottom-0 right-0 z-20 pointer-events-none flex items-end'>
-        <Building />
+      <div className='absolute bottom-0 right-0 z-20 pointer-events-none flex items-end w-[220px] sm:w-[280px] md:w-[340px] lg:w-[431px]'>
+        <Building className='w-full h-auto' />
       </div>
 
       {/* Road: at the bottom and above the building */}
@@ -54,11 +13,10 @@ const IllustrationSection = () => {
         <Road />
       </div>
 
-      {/* Water: repeating background tile */}
-      <div
-        className='absolute bottom-6 left-0 right-0 w-full h-48 z-10 pointer-events-none'
-        style={waterStyle}
-      />
+      {/* Water: sits above the road vertically */}
+      <div className='absolute bottom-0 left-0 right-0 w-full h-48 object-cover z-10 pointer-events-none flex items-end justify-start'>
+        <Water />
+      </div>
     </div>
   );
 };

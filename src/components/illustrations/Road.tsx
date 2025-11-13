@@ -4,7 +4,7 @@ const Road = () => (
     width='100%'
     viewBox='0 0 1623 27'
     fill='none'
-    preserveAspectRatio='xMinYMid meet'
+    // preserveAspectRatio='xMinYMid meet'
     className='object-cover'
   >
     <rect width='1623' height='27' fill='#384D4E' />
