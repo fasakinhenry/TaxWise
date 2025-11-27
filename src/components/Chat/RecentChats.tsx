@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MessageSquare, Plus, X } from 'lucide-react';
+import { MessageSquare, Plus, Trash2 } from 'lucide-react';
 
 interface RecentChatsProps {
   onChatSelect?: () => void;
@@ -61,20 +61,20 @@ const RecentChats: React.FC<RecentChatsProps> = ({ onChatSelect }) => {
         </motion.button>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-2 pr-1">
+      <div className="flex-1 overflow-y-auto space-y-2">
         {chats.map((chat, index) => (
           <motion.button
             key={chat.id}
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.05 }}
-            whileHover={{ scale: 1.02, x: 4 }}
+            whileHover={{ backgroundColor: activeChat === chat.id ? 'rgb(209 250 229)' : 'rgb(249 250 251)' }}
             whileTap={{ scale: 0.98 }}
             onClick={() => handleChatClick(chat.id)}
-            className={`w-full text-left p-3 rounded-xl transition-all group relative ${
+            className={`w-full cursor-pointer text-left p-3 rounded-xl transition-all group relative ${
               activeChat === chat.id
                 ? 'bg-emerald-50 border border-emerald-200'
-                : 'hover:bg-gray-50 border border-transparent'
+                : 'border border-transparent'
             }`}
           >
             <div className="flex items-start gap-3">
@@ -107,13 +107,14 @@ const RecentChats: React.FC<RecentChatsProps> = ({ onChatSelect }) => {
               
               {/* Delete button - appears on hover */}
               <motion.button
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileHover={{ scale: 1.1 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0 }}
+                whileHover={{ scale: 1.1, opacity: 1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={(e) => handleDeleteChat(chat.id, e)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md bg-red-50 text-red-500 items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hidden group-hover:flex hover:bg-red-100"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md bg-red-50 text-black items-center justify-center transition-opacity hidden group-hover:flex hover:bg-red-100 cursor-pointer"
               >
-                <X size={14} />
+                <Trash2 size={14} />
               </motion.button>
             </div>
           </motion.button>

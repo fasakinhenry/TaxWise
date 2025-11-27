@@ -1,6 +1,6 @@
-import { useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Briefcase, ThumbsUp, ThumbsDown, ExternalLink } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Briefcase, ThumbsUp, ThumbsDown, ExternalLink, Copy, Edit2 } from 'lucide-react';
 import SuggestedTopics from './SuggestedTopics';
 
 interface Message {
@@ -11,7 +11,7 @@ interface Message {
 }
 
 const ChatMessages: React.FC = () => {
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [hoveredMessage, setHoveredMessage] = useState<string | null>(null);
 
   // Example messages - replace with actual state management
   const messages: Message[] = [
@@ -32,13 +32,14 @@ const ChatMessages: React.FC = () => {
     },
   ];
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const handleCopy = (content: string) => {
+    navigator.clipboard.writeText(content);
+    console.log('Copied:', content);
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  const handleEdit = (id: string) => {
+    console.log('Edit message:', id);
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -60,17 +61,19 @@ const ChatMessages: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 bg-gray-50">
+    <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-6 bg-gray-50">
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="space-y-6 max-w-4xl mx-auto"
+        className="space-y-6 lg:max-w-4xl lg:mx-auto"
       >
         {messages.map((message) => (
           <motion.div
             key={message.id}
             variants={messageVariants}
+            onMouseEnter={() => setHoveredMessage(message.id)}
+            onMouseLeave={() => setHoveredMessage(null)}
             className={`flex gap-3 sm:gap-4 ${
               message.type === 'user' ? 'flex-row-reverse' : ''
             }`}
@@ -91,41 +94,77 @@ const ChatMessages: React.FC = () => {
                 message.type === 'user' ? 'flex justify-end' : ''
               }`}
             >
-              <div
-                className={`max-w-3xl rounded-2xl p-4 sm:p-5 ${
-                  message.type === 'user'
-                    ? 'bg-gray-900 text-white shadow-lg'
-                    : 'bg-white text-gray-900 shadow-sm border border-gray-100'
-                }`}
-              >
-                <p className="text-sm sm:text-base whitespace-pre-line leading-relaxed">
-                  {message.content}
-                </p>
+              <div className="relative">
+                <div
+                  className={`max-w-3xl rounded-2xl p-4 sm:p-5 ${
+                    message.type === 'user'
+                      ? 'bg-gray-900 text-white shadow-lg'
+                      : 'bg-white text-gray-900 shadow-sm border border-gray-100'
+                  }`}
+                >
+                  <p className="text-sm sm:text-base whitespace-pre-line leading-relaxed">
+                    {message.content}
+                  </p>
 
-                {message.type === 'bot' && (
-                  <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100">
-                    <motion.button 
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="text-gray-400 hover:text-emerald-500 transition-colors"
-                    >
-                      <ThumbsUp size={18} />
-                    </motion.button>
-                    <motion.button 
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="text-gray-400 hover:text-emerald-500 transition-colors"
-                    >
-                      <ThumbsDown size={18} />
-                    </motion.button>
-                    <motion.button 
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="text-emerald-500 hover:text-emerald-600 transition-colors flex items-center gap-1 text-sm font-medium ml-auto"
-                    >
-                      Learn More <ExternalLink size={14} />
-                    </motion.button>
-                  </div>
+                  {message.type === 'bot' && (
+                    <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100">
+                      <motion.button 
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="text-gray-400 hover:text-emerald-500 transition-colors"
+                      >
+                        <ThumbsUp size={18} />
+                      </motion.button>
+                      <motion.button 
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="text-gray-400 hover:text-emerald-500 transition-colors"
+                      >
+                        <ThumbsDown size={18} />
+                      </motion.button>
+                      <motion.button 
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="text-emerald-500 hover:text-emerald-600 transition-colors flex items-center gap-1 text-sm font-medium ml-auto"
+                      >
+                        Learn More <ExternalLink size={14} />
+                      </motion.button>
+                    </div>
+                  )}
+                </div>
+
+                {/* User Message Actions */}
+                {message.type === 'user' && (
+                  <AnimatePresence>
+                    {hoveredMessage === message.id && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute bottom-full right-0 mb-2 flex gap-2 bg-white rounded-lg shadow-lg border border-gray-200 p-1"
+                      >
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => handleCopy(message.content)}
+                          className="p-2 text-gray-600 hover:text-emerald-500 hover:bg-gray-50 rounded-md transition-colors"
+                          title="Copy"
+                        >
+                          <Copy size={16} />
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => handleEdit(message.id)}
+                          className="p-2 text-gray-600 hover:text-emerald-500 hover:bg-gray-50 rounded-md transition-colors"
+                          title="Edit"
+                        >
+                          <Edit2 size={16} />
+                        </motion.button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 )}
               </div>
             </div>
@@ -144,7 +183,6 @@ const ChatMessages: React.FC = () => {
         ))}
 
         <SuggestedTopics />
-        <div ref={messagesEndRef} />
       </motion.div>
     </div>
   );

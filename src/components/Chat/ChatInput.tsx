@@ -25,9 +25,9 @@ const ChatInput: React.FC = () => {
   };
 
   return (
-    <div className="border-t border-gray-100 p-4 sm:p-6 bg-white">
-      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-        <div className="flex gap-3">
+    <div className="sticky bottom-0 border-t border-gray-100 p-3 sm:p-6 bg-white">
+      <form onSubmit={handleSubmit} className="lg:max-w-4xl lg:mx-auto">
+        <div className="flex gap-2 sm:gap-3">
           <motion.div
             className="flex-1"
             animate={{ scale: isFocused ? 1.01 : 1 }}
@@ -61,7 +61,7 @@ const ChatInput: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="text-xs text-gray-500 text-center mt-3"
+          className="text-xs text-gray-500 text-center mt-2 sm:mt-3"
         >
           TaxBot can make mistakes. Always verify important tax information.
         </motion.p>
