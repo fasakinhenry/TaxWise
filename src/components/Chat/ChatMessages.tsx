@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 import { Briefcase, ThumbsUp, ThumbsDown, ExternalLink } from 'lucide-react';
 import SuggestedTopics from './SuggestedTopics';
 
@@ -10,6 +11,29 @@ interface Message {
   timestamp?: string;
 }
 
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const messageVariants: Variants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: 'spring',
+      damping: 20,
+      stiffness: 150,
+    },
+  },
+};
+
 const ChatMessages: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -18,7 +42,8 @@ const ChatMessages: React.FC = () => {
     {
       id: '1',
       type: 'bot',
-      content: "Hello! I'm TaxBot, your AI-powered tax education assistant. 👋 I'm here to help you understand Nigerian tax laws in simple, relatable language. What would you like to learn about today?",
+      content:
+        "Hello! I'm TaxBot, your AI-powered tax education assistant. 👋 I'm here to help you understand Nigerian tax laws in simple, relatable language. What would you like to learn about today?",
     },
     {
       id: '2',
@@ -28,7 +53,8 @@ const ChatMessages: React.FC = () => {
     {
       id: '3',
       type: 'bot',
-      content: "Great question! VAT stands for Value Added Tax. Think of it as a small fee (currently 7.5% in Nigeria) that's added to most things you buy - from your favorite snacks to your phone data. 📊\n\nAs a student, you don't pay VAT directly from your pocket separately. Instead, it's already included in the price of goods and services. For example, if you buy a ₦1,000 item, about ₦70 of that is VAT that goes to the government.\n\nThe good news? Essential items like basic food items, medical services, and educational materials are usually VAT-exempt, so you save money on those! 💰",
+      content:
+        "Great question! VAT stands for Value Added Tax. Think of it as a small fee (currently 7.5% in Nigeria) that's added to most things you buy - from your favorite snacks to your phone data. 📊\n\nAs a student, you don't pay VAT directly from your pocket separately. Instead, it's already included in the price of goods and services. For example, if you buy a ₦1,000 item, about ₦70 of that is VAT that goes to the government.\n\nThe good news? Essential items like basic food items, medical services, and educational materials are usually VAT-exempt, so you save money on those! 💰",
     },
   ];
 
@@ -39,25 +65,6 @@ const ChatMessages: React.FC = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const messageVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: 'spring', damping: 20, stiffness: 150 },
-    },
-  };
 
   return (
     <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 bg-gray-50">
@@ -76,7 +83,7 @@ const ChatMessages: React.FC = () => {
             }`}
           >
             {message.type === 'bot' && (
-              <motion.div 
+              <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', delay: 0.1 }}
@@ -86,11 +93,7 @@ const ChatMessages: React.FC = () => {
               </motion.div>
             )}
 
-            <div
-              className={`flex-1 ${
-                message.type === 'user' ? 'flex justify-end' : ''
-              }`}
-            >
+            <div className={`flex-1 ${message.type === 'user' ? 'flex justify-end' : ''}`}>
               <div
                 className={`max-w-3xl rounded-2xl p-4 sm:p-5 ${
                   message.type === 'user'
@@ -104,21 +107,23 @@ const ChatMessages: React.FC = () => {
 
                 {message.type === 'bot' && (
                   <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100">
-                    <motion.button 
+                    <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       className="text-gray-400 hover:text-emerald-500 transition-colors"
                     >
                       <ThumbsUp size={18} />
                     </motion.button>
-                    <motion.button 
+
+                    <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       className="text-gray-400 hover:text-emerald-500 transition-colors"
                     >
                       <ThumbsDown size={18} />
                     </motion.button>
-                    <motion.button 
+
+                    <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       className="text-emerald-500 hover:text-emerald-600 transition-colors flex items-center gap-1 text-sm font-medium ml-auto"
@@ -131,7 +136,7 @@ const ChatMessages: React.FC = () => {
             </div>
 
             {message.type === 'user' && (
-              <motion.div 
+              <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', delay: 0.1 }}
