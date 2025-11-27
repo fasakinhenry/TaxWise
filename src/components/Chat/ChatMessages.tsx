@@ -56,7 +56,7 @@ const ChatMessages: React.FC = () => {
     visible: {
       y: 0,
       opacity: 1,
-      transition: { type: 'spring', damping: 20, stiffness: 150 },
+      transition: { type: 'spring' as const, damping: 20, stiffness: 150 },
     },
   };
 
