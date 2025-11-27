@@ -233,12 +233,13 @@ const Navbar: React.FC = () => {
                 <ul className='space-y-8'>
                   {[
                     {
-                      label: 'Government',
-                      to: '/government',
+                      label: 'Home',
+                      to: '/chat',
                       hasDropdown: true,
                     },
-                    { label: 'Services', to: '/services' },
+                    { label: 'Learn', to: '/learn' },
                     { label: 'Newsroom', to: '/newsroom' },
+                    { label: 'Articles', to: '/articles' },
                     { label: 'Events', to: '/events' },
                     { label: 'Connect', to: '/connect' },
                   ].map((item, index) => (
