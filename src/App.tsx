@@ -1,16 +1,30 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './layouts/Layout';
+import AuthLayout from './layouts/AuthLayout';
 import LandingPage from './pages';
 import Chat from './pages/Chat';
+import Signup from './pages/Signup';
+import Signin from './pages/Signin';
+import WelcomePage from './pages/WelcomePage';
 
 function App() {
   return (
     <Router>
       <Routes>
+        {/* Main Layout Routes */}
         <Route element={<Layout />}>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/chat" element={<Chat />} />
+          <Route path='/' element={<LandingPage />} />
+          <Route path='/chat' element={<Chat />} />
         </Route>
+
+        {/* Auth Layout Routes */}
+        <Route path='/authentication' element={<AuthLayout />}>
+          <Route path='signup' element={<Signup />} />
+          <Route path='signin' element={<Signin />} />
+        </Route>
+
+        {/* Welcome Page (No Layout) */}
+        <Route path='/authentication/welcome' element={<WelcomePage />} />
       </Routes>
     </Router>
   );
