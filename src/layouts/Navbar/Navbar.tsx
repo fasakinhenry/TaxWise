@@ -50,10 +50,10 @@ const Navbar: React.FC = () => {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const navLinks = [
-    { id: 'features', label: 'Features', to: '/#features' },
-    { id: 'government', label: 'Government', to: '/government' },
-    { id: 'services', label: 'Services', to: '/services' },
+    { id: 'home', label: 'Home', to: '/chat' },
+    { id: 'learn', label: 'Learn', to: '/learn' },
     { id: 'newsroom', label: 'Newsroom', to: '/newsroom' },
+    { id: 'articles', label: 'Articles', to: '/articles' },
     { id: 'events', label: 'Events', to: '/events' },
     { id: 'connect', label: 'Connect', to: '/connect' },
   ];

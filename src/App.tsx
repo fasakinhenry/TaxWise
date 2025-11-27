@@ -1,21 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import routes from './utils/router';
-import Footer from './layouts/Footer/Footer';
+import Layout from './layouts/Layout';
+import LandingPage from './pages';
+import Chat from './pages/Chat';
 
 function App() {
   return (
     <Router>
-      <div className='min-h-screen bg-gray-50 text-gray-900 flex flex-col'>
-        {/* <Navbar /> */}
-        <main className='flex-grow'>
-          <Routes>
-            {routes.map((route, index) => (
-              <Route key={index} path={route.path} element={route.element} />
-            ))}
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/chat" element={<Chat />} />
+        </Route>
+      </Routes>
     </Router>
   );
 }
