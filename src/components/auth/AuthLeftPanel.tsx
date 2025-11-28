@@ -6,9 +6,7 @@ const AuthLeftPanel = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
+      transition: { staggerChildren: 0.15 },
     },
   };
 
@@ -18,84 +16,98 @@ const AuthLeftPanel = () => {
   };
 
   return (
-    <div className='relative w-full bg-linear-to-br from-teal-50 to-gray-100 overflow-hidden'>
-      {/* Decorative background elements */}
-      <div className='absolute top-0 left-0 w-32 h-32 bg-gray-200 rounded-br-full opacity-50' />
-      <div className='absolute bottom-0 right-0 w-40 h-40 bg-gray-200 rounded-tl-full opacity-50' />
-      <div className='absolute top-1/4 right-0 w-24 h-24 bg-gray-300 rounded-l-full opacity-30' />
-      <div className='absolute bottom-1/3 left-0 w-20 h-20 bg-gray-300 rounded-r-full opacity-30' />
+    <div className='relative w-full h-fullbg-teal-50 overflow-hidden flex items-center justify-center'>
+      {/* -------------------- DECORATIVE CORNER SHAPES -------------------- */}
+
+      {/* TOP LEFT - Rounded box */}
+      <div className='absolute top-0 left-0 w-32 h-32 bg-gray-300 rounded-br-[40px]  opacity-40' />
+
+      {/* TOP RIGHT - Inverted L shape */}
+      <div className='absolute top-0 right-0 w-50 h-70 opacity-40'>
+        <div className='absolute top-0 right-0 w-full h-15 bg-gray-300 rounded-bl-3xl rounded-tr-3xl' />
+        <div className='absolute top-0 right-0 w-20 h-full bg-gray-300 rounded-bl-3xl rounded-tr-3xl' />
+      </div>
+
+      {/* BOTTOM LEFT - L shape */}
+      <div className='absolute bottom-0 left-0 w-50 h-70 opacity-40'>
+        <div className='absolute bottom-0 left-0 w-full h-15 bg-gray-300 rounded-bl-full rounded-tr-3xl' />
+        <div className='absolute bottom-0 left-0 w-20 h-full bg-gray-300 rounded-bl-full rounded-tr-3xl' />
+      </div>
+
+      {/* BOTTOM RIGHT - Rounded box */}
+      <div className='absolute bottom-0 right-0 w-32 h-32 bg-gray-300 rounded-tl-[40px] rounded-br-[40px] opacity-40' />
+
+      {/* -------------------- CONTENT -------------------- */}
 
       <motion.div
         variants={containerVariants}
         initial='hidden'
         animate='visible'
-        className='relative z-10 h-full flex flex-col justify-center items-center p-12 space-y-6'
+        className='relative z-10 grid grid-cols-2 gap-6 p-10'
       >
-        {/* Image Card 1 */}
+        {/* IMAGE 1 */}
         <motion.div
           variants={itemVariants}
-          className='relative w-48 h-48 rounded-3xl overflow-hidden shadow-lg'
+          className='w-44 h-44 rounded-3xl overflow-hidden shadow-lg'
         >
           <img
             src='https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop'
-            alt='Students collaborating'
             className='w-full h-full object-cover'
           />
         </motion.div>
 
-        {/* Text Card */}
+        {/* TEXT CARD */}
         <motion.div
           variants={itemVariants}
-          className='bg-teal-700 text-white p-6 rounded-3xl shadow-lg max-w-xs flex items-center justify-center gap-3'
+          className='w-44 h-44 bg-teal-700 rounded-3xl p-6 text-white flex flex-col justify-between shadow-lg'
         >
-          <Plus className='w-6 h-6 shrink-0' />
+          <Plus className='w-5 h-5' />
           <p className='text-sm font-medium leading-tight'>
-            Smart AI tax chatbot for Nigerian taxpayers.
+            Taxwise — AI-powered tax assistant for every Nigerian.
           </p>
         </motion.div>
 
-        {/* Badge */}
+        {/* BADGE */}
         <motion.div
           variants={itemVariants}
-          className='bg-teal-600 text-white px-6 py-3 rounded-full shadow-md'
+          className='w-44 h-44 bg-teal-600 rounded-3xl flex items-center justify-center shadow-lg'
         >
-          <span className='text-sm font-semibold'>9ja Taxes</span>
+          <span className='text-white bg-white/20 px-5 py-2 rounded-full text-sm font-semibold'>
+            Taxwise
+          </span>
         </motion.div>
 
-        {/* STEM Card */}
+        {/* INFO CARD */}
         <motion.div
           variants={itemVariants}
-          className='bg-black text-white p-6 rounded-3xl shadow-lg max-w-xs flex items-center justify-center gap-3'
+          className='w-44 h-44 bg-black rounded-3xl p-6 text-white flex flex-col justify-between shadow-lg'
         >
-          <Plus className='w-6 h-6 shrink-0' />
-          <div className='text-sm font-medium leading-tight'>
-            <p>Science. Technology.</p>
-            <p>Engineering.</p>
-            <p>Mathematics.</p>
-            <p>Medicine.</p>
-          </div>
+          <Plus className='w-5 h-5' />
+          <p className='text-sm font-medium leading-tight'>
+            AI. Taxes. Compliance.
+            <br />
+            Simplicity.
+          </p>
         </motion.div>
 
-        {/* Image Card 2 */}
+        {/* IMAGE 2 */}
         <motion.div
           variants={itemVariants}
-          className='relative w-48 h-48 rounded-3xl overflow-hidden shadow-lg'
+          className='w-44 h-44 rounded-3xl overflow-hidden shadow-lg'
         >
           <img
             src='https://images.unsplash.com/photo-1531545514256-b1400bc00f31?w=400&h=400&fit=crop'
-            alt='Students studying'
             className='w-full h-full object-cover'
           />
         </motion.div>
 
-        {/* Image Card 3 */}
+        {/* IMAGE 3 */}
         <motion.div
           variants={itemVariants}
-          className='relative w-48 h-48 rounded-3xl overflow-hidden shadow-lg'
+          className='w-44 h-44 rounded-3xl overflow-hidden shadow-lg'
         >
           <img
             src='https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=400&fit=crop'
-            alt='Students working'
             className='w-full h-full object-cover'
           />
         </motion.div>
