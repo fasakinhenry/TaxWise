@@ -41,10 +41,10 @@ const Signin = () => {
         transition={{ duration: 0.3 }}
       >
         <h1 className='text-3xl font-bold text-gray-900 mb-2'>
-          Sign in to S-VCG
+          Sign in to taxwiser
         </h1>
         <p className='text-gray-600 mb-8'>
-          Access the S-VCG Innovation Portal with your secure student account.
+          Access the taxwiser Innovation Portal with your secure student account.
         </p>
 
         <form onSubmit={handleSubmit} className='space-y-5 mb-8'>

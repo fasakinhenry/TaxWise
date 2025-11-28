@@ -46,7 +46,7 @@ const BasicInfoStep = ({
       transition={{ duration: 0.3 }}
     >
       <h1 className='text-3xl font-bold text-gray-900 mb-2'>
-        Create Your Student Account
+        Create Your Account
       </h1>
       <p className='text-gray-600 mb-8'>
         Let's start with your basic information
