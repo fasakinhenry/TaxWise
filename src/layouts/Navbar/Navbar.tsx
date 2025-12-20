@@ -121,7 +121,7 @@ const Navbar: React.FC = () => {
 
             <motion.div variants={linkVariants} whileHover='hover'>
               <Link
-                to='/login'
+                to='/authentication/signin'
                 className='bg-[#108A00] hover:bg-[#0d6e00] text-white px-6 py-2 rounded font-medium transition-colors duration-200'
               >
                 Login
@@ -158,7 +158,7 @@ const Navbar: React.FC = () => {
             </button>
 
             <Link
-              to='/login'
+              to='authentication/signin'
               className='bg-[#108A00] hover:bg-[#0d6e00] text-white px-5 py-2 rounded font-medium transition-colors'
             >
               Login
@@ -274,7 +274,7 @@ const Navbar: React.FC = () => {
                 className='mt-16'
               >
                 <Link
-                  to='/login'
+                  to='/authentication/signin'
                   onClick={toggleMenu}
                   className='inline-block bg-[#108A00] hover:bg-[#0d6e00] text-white px-8 py-3 rounded font-semibold text-lg transition-colors duration-200'
                 >
