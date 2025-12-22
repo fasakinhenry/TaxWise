@@ -1,69 +1,55 @@
 import { createContext, useEffect, useState, type ReactNode } from 'react';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 
 axios.defaults.withCredentials = true;
 
-/**
- * Types
- */
-interface UserData {
-  // adjust based on your backend response
+interface User {
   _id: string;
   name: string;
   email: string;
-  createdAt?: string;
+  isAccountVerified: boolean;
 }
 
 interface AppContextType {
   backendUrl: string;
   isLoggedin: boolean;
-  setIsLoggedin: React.Dispatch<React.SetStateAction<boolean>>;
-  userData: UserData | null;
-  setUserData: React.Dispatch<React.SetStateAction<UserData | null>>;
+  setIsLoggedin: (v: boolean) => void;
+  userData: User | null;
+  setUserData: (u: User | null) => void;
   getUserData: () => Promise<void>;
 }
 
-interface AppContextProviderProps {
-  children: ReactNode;
-}
+export const AppContent = createContext<AppContextType>(
+  {} as AppContextType
+);
 
-/**
- * Context
- */
-export const AppContent = createContext<AppContextType | null>(null);
+export const AppContextProvider = ({ children }: { children: ReactNode }) => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const [isLoggedin, setIsLoggedin] = useState(false);
+  const [userData, setUserData] = useState<User | null>(null);
 
-/**
- * Provider
- */
-export const AppContextProvider = ({ children }: AppContextProviderProps) => {
-  const backendUrl = import.meta.env.VITE_BACKEND_URL as string;
-
-  const [isLoggedin, setIsLoggedin] = useState<boolean>(false);
-  const [userData, setUserData] = useState<UserData | null>(null);
-
-  const getAuthState = async (): Promise<void> => {
+  const getAuthState = async () => {
     try {
       const { data } = await axios.get(`${backendUrl}/auth/is-auth`);
-
       if (data.success) {
         setIsLoggedin(true);
         await getUserData();
       }
-    } catch (error) {
-      const err = error as AxiosError<any>;
-      toast.error(err.response?.data?.message || 'Auth check failed');
+    } catch {
+      setIsLoggedin(false);
+      setUserData(null);
     }
   };
 
-  const getUserData = async (): Promise<void> => {
+  const getUserData = async () => {
     try {
       const { data } = await axios.get(`${backendUrl}/user/profile`);
-
-      data.success ? setUserData(data.userData) : toast.error(data.message);
-    } catch (error) {
-      const err = error as AxiosError<any>;
-      toast.error(err.response?.data?.message || 'Failed to fetch user');
+      if (data.success) {
+        setUserData(data.userData);
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message);
     }
   };
 
@@ -71,14 +57,18 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     getAuthState();
   }, []);
 
-  const value: AppContextType = {
-    backendUrl,
-    isLoggedin,
-    setIsLoggedin,
-    userData,
-    setUserData,
-    getUserData,
-  };
-
-  return <AppContent.Provider value={value}>{children}</AppContent.Provider>;
+  return (
+    <AppContent.Provider
+      value={{
+        backendUrl,
+        isLoggedin,
+        setIsLoggedin,
+        userData,
+        setUserData,
+        getUserData,
+      }}
+    >
+      {children}
+    </AppContent.Provider>
+  );
 };
