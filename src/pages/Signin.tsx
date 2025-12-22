@@ -3,7 +3,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, ChevronLeft } from 'lucide-react';
 
+import axios from 'axios';
+import { useContext } from 'react';
+import { AppContent } from '../context/AppContext';
+import { toast } from 'react-toastify';
+
 const Signin = () => {
+  const { backendUrl, setIsLoggedin, getUserData } = useContext(AppContent);
+
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -11,11 +18,22 @@ const Signin = () => {
     password: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic
-    console.log('Login:', formData);
-    navigate('/chat');
+
+    try {
+      const { data } = await axios.post(`${backendUrl}/auth/login`, formData);
+
+      if (data.success) {
+        setIsLoggedin(true);
+        await getUserData();
+        navigate('/chat');
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Login failed');
+    }
   };
 
   const isValid = formData.email && formData.password;
@@ -44,7 +62,8 @@ const Signin = () => {
           Sign in to taxwiser
         </h1>
         <p className='text-gray-600 mb-8'>
-          Access the taxwiser Innovation Portal with your secure student account.
+          Access the taxwiser Innovation Portal with your secure student
+          account.
         </p>
 
         <form onSubmit={handleSubmit} className='space-y-5 mb-8'>
