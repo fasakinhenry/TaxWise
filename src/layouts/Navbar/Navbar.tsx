@@ -54,8 +54,6 @@ const Navbar: React.FC = () => {
     { id: 'learn', label: 'Learn', to: '/learn' },
     { id: 'newsroom', label: 'Newsroom', to: '/newsroom' },
     { id: 'articles', label: 'Articles', to: '/articles' },
-    { id: 'events', label: 'Events', to: '/events' },
-    { id: 'connect', label: 'Connect', to: '/connect' },
   ];
 
   return (

@@ -1,6 +1,11 @@
 import { motion } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
 
+// import axios from 'axios';
+// import { useContext, useEffect } from 'react';
+// import { AppContent } from '../../../context/AppContext';
+
+
 interface OTPStepProps {
   email: string;
   onContinue: () => void;

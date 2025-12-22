@@ -35,8 +35,7 @@ const Footer: React.FC = () => {
               TaxWise
             </FlipText>
             <p className='text-sm text-gray-300'>
-              Making tax guidance simple for Nigerian businesses and
-              individuals.
+              Naija tax guidance right at your fingertips. We make the law simple, so you make the smart move
             </p>
             <div className='flex items-center space-x-3'>
               <a
@@ -99,22 +98,6 @@ const Footer: React.FC = () => {
                     Pricing
                   </a>
                 </li>
-                <li>
-                  <a
-                    href='/docs'
-                    className='inline-block text-gray-300 motion-safe:transition-all motion-reduce:transition-none duration-200 ease-out transform hover:-translate-y-0.5 hover:tracking-wide hover:text-white focus:-translate-y-0.5 focus:tracking-wide focus:text-white px-0 py-0 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded'
-                  >
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href='/integrations'
-                    className='inline-block text-gray-300 motion-safe:transition-all motion-reduce:transition-none duration-200 ease-out transform hover:-translate-y-0.5 hover:tracking-wide hover:text-white focus:-translate-y-0.5 focus:tracking-wide focus:text-white px-0 py-0 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded'
-                  >
-                    Integrations
-                  </a>
-                </li>
               </ul>
             </nav>
           </div>
@@ -148,14 +131,6 @@ const Footer: React.FC = () => {
                     className='inline-block text-gray-300 motion-safe:transition-all motion-reduce:transition-none duration-200 ease-out transform hover:-translate-y-0.5 hover:tracking-wide hover:text-white focus:-translate-y-0.5 focus:tracking-wide focus:text-white px-0 py-0 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded'
                   >
                     Guides
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href='/api'
-                    className='inline-block text-gray-300 motion-safe:transition-all motion-reduce:transition-none duration-200 ease-out transform hover:-translate-y-0.5 hover:tracking-wide hover:text-white focus:-translate-y-0.5 focus:tracking-wide focus:text-white px-0 py-0 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded'
-                  >
-                    API
                   </a>
                 </li>
               </ul>
