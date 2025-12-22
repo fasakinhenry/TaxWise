@@ -134,7 +134,7 @@ const Signin = () => {
           <button
             type='submit'
             disabled={!isValid}
-            className='w-full bg-teal-700 hover:bg-teal-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-4 rounded-xl transition-colors'
+            className='w-full bg-teal-700 hover:bg-teal-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-4 rounded-xl transition-colors cursor-pointer'
           >
             Login
           </button>

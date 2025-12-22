@@ -6,10 +6,16 @@ import Chat from './pages/Chat';
 import Signup from './pages/Signup';
 import Signin from './pages/Signin';
 import WelcomePage from './pages/WelcomePage';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
     <Router>
+      <ToastContainer
+        position='top-right'
+        autoClose={2500}
+      />
       <Routes>
         {/* Main Layout Routes */}
         <Route element={<Layout />}>
