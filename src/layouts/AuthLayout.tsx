@@ -5,7 +5,7 @@ const AuthLayout = () => {
   return (
     <div className='min-h-screen flex flex-col lg:flex-row'>
       {/* Left Panel - Hidden on mobile */}
-      <div className='hidden lg:flex lg:w-1/2'>
+      <div className='hidden lg:flex lg:w-1/2 bg-gray-50'>
         <AuthLeftPanel />
       </div>
 
