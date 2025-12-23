@@ -7,11 +7,11 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { userData, isLoggedin } = useContext(AppContent);
+  const { userData, isLoading } = useContext(AppContent);
   const location = useLocation();
 
   // Show loading while checking auth state
-  if (isLoggedin === false && userData === false) {
+  if (isLoading) {
     return (
       <div className='min-h-screen flex items-center justify-center bg-gray-50'>
         <div className='text-center'>
