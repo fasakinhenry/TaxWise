@@ -18,6 +18,7 @@ interface AppContextType {
   userData: User | false;
   setUserData: (u: User | false) => void;
   getUserData: () => Promise<void>;
+  isLoading: boolean;
 }
 
 export const AppContent = createContext<AppContextType>({} as AppContextType);
@@ -26,6 +27,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState<User | false>(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getAuthState = async () => {
     try {
@@ -33,11 +35,13 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
       
       if (data.success) {
         setIsLoggedin(true);
-        getUserData();
+        await getUserData();
       }
     } catch (error: any) {
       setIsLoggedin(false);
       setUserData(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -68,6 +72,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         userData,
         setUserData,
         getUserData,
+        isLoading,
       }}
     >
       {children}
