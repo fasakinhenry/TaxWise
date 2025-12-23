@@ -8,7 +8,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  isAccountVerified: boolean;
+  isVerified: boolean;
 }
 
 interface AppContextType {
@@ -20,9 +20,7 @@ interface AppContextType {
   getUserData: () => Promise<void>;
 }
 
-export const AppContent = createContext<AppContextType>(
-  {} as AppContextType
-);
+export const AppContent = createContext<AppContextType>({} as AppContextType);
 
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
