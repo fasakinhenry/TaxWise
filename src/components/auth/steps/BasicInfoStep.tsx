@@ -1,17 +1,15 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 
+interface BasicInfoFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
 interface BasicInfoStepProps {
-  formData: {
-    firstName: string;
-    lastName: string;
-    email: string;
-  };
-  onUpdate: (data: {
-    firstName: string;
-    lastName: string;
-    email: string;
-  }) => void;
+  formData: BasicInfoFormData;
+  onUpdate: (data: Partial<BasicInfoFormData>) => void;
   onContinue: () => void;
 }
 
@@ -20,23 +18,29 @@ const BasicInfoStep = ({
   onUpdate,
   onContinue,
 }: BasicInfoStepProps) => {
-  const [localData, setLocalData] = useState(formData);
-  const [emailSent, setEmailSent] = useState(false);
+  const [localData, setLocalData] = useState<BasicInfoFormData>(formData);
+  const [emailNoticeVisible, setEmailNoticeVisible] = useState(false);
 
-  const handleChange = (field: string, value: string) => {
-    const updated = { ...localData, [field]: value };
-    setLocalData(updated);
-    onUpdate(updated);
+  const updateField = <K extends keyof BasicInfoFormData>(
+    key: K,
+    value: BasicInfoFormData[K]
+  ) => {
+    const next = { ...localData, [key]: value };
+    setLocalData(next);
+    onUpdate({ [key]: value });
   };
 
   const handleContinue = () => {
-    setEmailSent(true);
+    setEmailNoticeVisible(true);
     setTimeout(() => {
       onContinue();
     }, 1000);
   };
 
-  const isValid = localData.firstName && localData.lastName && localData.email;
+  const isValid =
+    localData.firstName.trim() &&
+    localData.lastName.trim() &&
+    localData.email.trim();
 
   return (
     <motion.div
@@ -45,97 +49,112 @@ const BasicInfoStep = ({
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
     >
-      <h1 className='text-3xl font-bold text-gray-900 mb-2'>
-        Create Your Account
+      {/* Header */}
+      <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        Create your account
       </h1>
-      <p className='text-gray-600 mb-8'>
-        Let's start with your basic information
+      <p className="text-gray-600 mb-8">
+        Let’s start with your basic information
       </p>
 
-      <div className='space-y-5 mb-8'>
+      {/* Form */}
+      <div className="space-y-5 mb-8">
         {/* First Name */}
         <div>
           <label
-            htmlFor='firstName'
-            className='block text-sm font-medium text-gray-700 mb-2'
+            htmlFor="firstName"
+            className="block text-sm font-medium text-gray-700 mb-2"
           >
-            First Name <span className='text-red-500'>*</span>
+            First Name <span className="text-red-500">*</span>
           </label>
           <input
-            type='text'
-            id='firstName'
+            id="firstName"
+            type="text"
+            placeholder="Henry"
             value={localData.firstName}
-            onChange={(e) => handleChange('firstName', e.target.value)}
-            placeholder='Panmwa'
-            className='w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent transition-all'
+            onChange={(e) => updateField('firstName', e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl
+              focus:outline-none focus:ring-2 focus:ring-teal-600
+              focus:border-transparent transition-all"
           />
         </div>
 
         {/* Last Name */}
         <div>
           <label
-            htmlFor='lastName'
-            className='block text-sm font-medium text-gray-700 mb-2'
+            htmlFor="lastName"
+            className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Last Name <span className='text-red-500'>*</span>
+            Last Name <span className="text-red-500">*</span>
           </label>
           <input
-            type='text'
-            id='lastName'
+            id="lastName"
+            type="text"
+            placeholder="Fasakin"
             value={localData.lastName}
-            onChange={(e) => handleChange('lastName', e.target.value)}
-            placeholder='Bala'
-            className='w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent transition-all'
+            onChange={(e) => updateField('lastName', e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl
+              focus:outline-none focus:ring-2 focus:ring-teal-600
+              focus:border-transparent transition-all"
           />
         </div>
 
         {/* Email */}
         <div>
           <label
-            htmlFor='email'
-            className='block text-sm font-medium text-gray-700 mb-2'
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Email Address <span className='text-red-500'>*</span>
+            Email Address <span className="text-red-500">*</span>
           </label>
           <input
-            type='email'
-            id='email'
+            id="email"
+            type="email"
+            placeholder="you@example.com"
             value={localData.email}
-            onChange={(e) => handleChange('email', e.target.value)}
-            placeholder='you@example.com'
-            className='w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent transition-all'
+            onChange={(e) => updateField('email', e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl
+              focus:outline-none focus:ring-2 focus:ring-teal-600
+              focus:border-transparent transition-all"
           />
-          <p className='text-xs text-gray-500 mt-2'>
+          <p className="text-xs text-gray-500 mt-2">
             (Your email will be used for login)
           </p>
         </div>
 
-        {emailSent && (
+        {/* Email Notice */}
+        {emailNoticeVisible && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className='bg-teal-50 border border-teal-200 rounded-xl p-4'
+            className="bg-teal-50 border border-teal-200 rounded-xl p-4"
           >
-            <p className='text-sm text-teal-700'>
+            <p className="text-sm text-teal-700">
               A 4-digit OTP will be sent to this email.
             </p>
           </motion.div>
         )}
       </div>
 
+      {/* CTA */}
       <button
         onClick={handleContinue}
         disabled={!isValid}
-        className='w-full bg-teal-700 hover:bg-teal-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-4 rounded-xl transition-colors'
+        className="w-full bg-teal-700 hover:bg-teal-800
+          disabled:bg-gray-300 disabled:cursor-not-allowed
+          text-white font-medium py-4 rounded-xl transition-colors"
       >
         Continue
       </button>
 
-      <div className='mt-6 text-center'>
-        <span className='text-sm text-gray-600'>Already have an account? </span>
+      {/* Footer */}
+      <div className="mt-6 text-center">
+        <span className="text-sm text-gray-600">
+          Already have an account?{' '}
+        </span>
         <a
-          href='/authentication/signin'
-          className='text-sm text-teal-700 hover:text-teal-800 font-medium'
+          href="/authentication/signin"
+          className="text-sm text-teal-700 hover:text-teal-800 font-medium"
         >
           Login
         </a>
