@@ -46,7 +46,7 @@ const Profile: React.FC = () => {
           className='bg-white rounded-2xl shadow-sm overflow-hidden'
         >
           {/* Header Section */}
-          <div className='bg-gradient-to-r from-emerald-500 to-emerald-600 px-8 py-12 text-white'>
+          <div className='bg-linear-to-r from-emerald-500 to-emerald-600 px-8 py-12 text-white'>
             <div className='flex items-center gap-6'>
               <div className='w-24 h-24 rounded-full bg-white text-emerald-600 flex items-center justify-center text-4xl font-bold shadow-lg'>
                 {firstLetter}

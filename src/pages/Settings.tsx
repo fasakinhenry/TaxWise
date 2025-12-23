@@ -51,7 +51,7 @@ const Settings: React.FC = () => {
     <div className='border-b border-gray-100 last:border-b-0'>
       <div className='px-8 py-6'>
         <div className='flex items-start gap-4'>
-          <div className='w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0'>
+          <div className='w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0'>
             <Icon className='text-emerald-600' size={20} />
           </div>
           <div className='flex-1'>
