@@ -84,7 +84,7 @@ const Navbar: React.FC = () => {
           className='absolute right-0 mt-3 w-56 bg-white border rounded-lg shadow-lg z-50'
         >
           <ul className='text-sm'>
-            {!userData?.isAccountVerified && (
+            {!userData?.isVerified && (
               <li
                 onClick={sendVerificationOtp}
                 className='px-4 py-3 hover:bg-gray-100 cursor-pointer'
