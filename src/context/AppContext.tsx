@@ -9,6 +9,11 @@ interface User {
   name: string;
   email: string;
   isVerified: boolean;
+  age?: number;
+  jobTitle?: string;
+  country?: string;
+  bio?: string;
+  avatarUrl?: string;
 }
 
 interface AppContextType {
