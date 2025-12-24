@@ -20,8 +20,8 @@ interface AppContextType {
   backendUrl: string;
   isLoggedin: boolean;
   setIsLoggedin: (v: boolean) => void;
-  userData: User | false;
-  setUserData: (u: User | false) => void;
+  userData: User | null;
+  setUserData: (u: User | null) => void;
   getUserData: () => Promise<void>;
   isLoading: boolean;
 }
@@ -31,20 +31,20 @@ export const AppContent = createContext<AppContextType>({} as AppContextType);
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [isLoggedin, setIsLoggedin] = useState(false);
-  const [userData, setUserData] = useState<User | false>(false);
+  const [userData, setUserData] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const getAuthState = async () => {
     try {
       const { data } = await axios.get(backendUrl + '/auth/is-auth');
-      
+
       if (data.success) {
         setIsLoggedin(true);
         await getUserData();
       }
     } catch (error: any) {
       setIsLoggedin(false);
-      setUserData(false);
+      setUserData(null);
     } finally {
       setIsLoading(false);
     }
@@ -53,7 +53,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const getUserData = async () => {
     try {
       const { data } = await axios.get(backendUrl + '/user/profile');
-      
+
       if (data.success) {
         setUserData(data.data.userData);
       } else {
