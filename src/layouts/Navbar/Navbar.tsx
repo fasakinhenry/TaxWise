@@ -118,7 +118,8 @@ const Navbar: React.FC = () => {
         <>
           {/* Backdrop */}
           <div
-            className='fixed inset-0 z-30'
+            className='fixed inset-0'
+            style={{ zIndex: 35 }}
             onClick={() => setShowUserMenu(false)}
           />
 
@@ -128,7 +129,8 @@ const Navbar: React.FC = () => {
             initial='hidden'
             animate='visible'
             exit='exit'
-            className='absolute right-0 mt-3 w-56 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden pointer-events-auto z-40'
+            className='absolute right-0 mt-3 w-56 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden'
+            style={{ zIndex: 50 }}
           >
             <div className='px-4 py-3 border-b border-gray-100'>
               <p className='text-sm font-semibold text-gray-900'>
@@ -201,7 +203,8 @@ const Navbar: React.FC = () => {
         variants={navVariants}
         initial='hidden'
         animate='visible'
-        className='w-full bg-white border-b border-gray-200 sticky top-0 z-40'
+        className='w-full bg-white border-b border-gray-200 sticky top-0'
+        style={{ zIndex: 45 }}
       >
         {/* Desktop */}
         <div className='hidden lg:flex items-center justify-between px-8 py-4'>
