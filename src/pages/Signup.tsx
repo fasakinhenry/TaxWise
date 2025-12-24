@@ -59,7 +59,15 @@ const Signup = () => {
       setIsSubmitting(true);
 
       // Combine firstname and lastname to create name
-      const name = `${formData.firstname} ${formData.lastname}`.trim();
+      const name =
+        `${formData.firstname.trim()} ${formData.lastname.trim()}`.trim();
+
+      // Validate that we have a proper name
+      if (!name || name.split(' ').length < 2) {
+        toast.error('Please provide both first and last name');
+        setIsSubmitting(false);
+        return;
+      }
 
       // Prepare the payload
       const payload = {
@@ -116,11 +124,13 @@ const Signup = () => {
               email: formData.email,
             }}
             onUpdate={(data) => {
-              update({
-                firstname: data.firstName,
-                lastname: data.lastName,
-                email: data.email,
-              });
+              // Map firstName/lastName to firstname/lastname
+              const updates: Partial<SignupFormData> = {};
+              if (data.firstName !== undefined)
+                updates.firstname = data.firstName;
+              if (data.lastName !== undefined) updates.lastname = data.lastName;
+              if (data.email !== undefined) updates.email = data.email;
+              update(updates);
             }}
             onContinue={next}
           />

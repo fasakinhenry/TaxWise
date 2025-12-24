@@ -41,7 +41,7 @@ const Navbar: React.FC = () => {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleUserMenu = () => setShowUserMenu((p) => !p);
 
-  const isAuthenticated = userData ? true : false;
+  const isAuthenticated = userData !== null && userData !== undefined;
   const firstName = userData ? userData.name.split(' ')[0] : '';
   const firstLetter = userData ? firstName.charAt(0).toUpperCase() : '';
 
@@ -86,7 +86,7 @@ const Navbar: React.FC = () => {
 
       if (data.success) {
         setIsLoggedin(false);
-        setUserData(false);
+        setUserData(null);
         toast.success(data.message);
         navigate('/');
       }
@@ -132,14 +132,15 @@ const Navbar: React.FC = () => {
 
   const UserDropdown = () => (
     <AnimatePresence>
-      {showUserMenu && (
+      {showUserMenu && userData && (
         <motion.div
           ref={dropdownRef}
           variants={dropdownVariants}
           initial='hidden'
           animate='visible'
           exit='exit'
-          className='absolute right-0 mt-3 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden'
+          className='absolute right-0 mt-3 w-56 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden pointer-events-auto'
+          style={{ zIndex: 9999 }}
         >
           <div className='px-4 py-3 border-b border-gray-100'>
             <p className='text-sm font-semibold text-gray-900'>
@@ -255,7 +256,7 @@ const Navbar: React.FC = () => {
                 Login
               </Link>
             ) : (
-              <div className='relative'>
+              <div className='relative' ref={dropdownRef}>
                 <button
                   onClick={toggleUserMenu}
                   className='flex items-center gap-2 hover:opacity-80 transition-opacity'

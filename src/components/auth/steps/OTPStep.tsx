@@ -21,14 +21,17 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(RESEND_DELAY);
   const [sendingOtp, setSendingOtp] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
 
   const inputRefs = Array.from({ length: OTP_LENGTH }, () =>
     useRef<HTMLInputElement>(null)
   );
 
-  // Send OTP on component mount
+  // Send OTP on component mount (only once)
   useEffect(() => {
-    sendOTP();
+    if (!otpSent) {
+      sendOTP();
+    }
   }, []);
 
   /* Countdown */
@@ -40,14 +43,14 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
 
   /* Auto-submit when complete */
   useEffect(() => {
-    if (otp.every(Boolean)) {
+    if (otp.every(Boolean) && otp.join('').length === OTP_LENGTH) {
       handleVerify();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [otp]);
 
   const sendOTP = async () => {
-    if (sendingOtp) return;
+    if (sendingOtp || otpSent) return;
 
     try {
       setSendingOtp(true);
@@ -56,6 +59,7 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
       const { data } = await axios.post(backendUrl + '/auth/send-verify-otp');
 
       if (data.success) {
+        setOtpSent(true);
         toast.success(data.message || 'Verification code sent to your email');
       } else {
         toast.error(data.message || 'Failed to send verification code');
@@ -64,6 +68,7 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
       const message =
         error.response?.data?.message || 'Failed to send verification code';
       toast.error(message);
+      console.error('Send OTP Error:', error.response?.data || error);
     } finally {
       setSendingOtp(false);
     }
@@ -122,9 +127,13 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
 
       axios.defaults.withCredentials = true;
 
+      console.log('Verifying OTP:', code);
+
       const { data } = await axios.post(backendUrl + '/auth/verify-email', {
         otp: code,
       });
+
+      console.log('Verify response:', data);
 
       if (data.success) {
         toast.success(data.message || 'Email verified successfully!');
@@ -135,6 +144,7 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
         inputRefs[0].current?.focus();
       }
     } catch (error: any) {
+      console.error('Verify OTP Error:', error.response?.data || error);
       const message =
         error.response?.data?.message ||
         'Invalid or expired code. Please try again.';
@@ -152,6 +162,7 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
     setResendTimer(RESEND_DELAY);
     setOtp(Array(OTP_LENGTH).fill(''));
     setError('');
+    setOtpSent(false);
     inputRefs[0].current?.focus();
 
     await sendOTP();
