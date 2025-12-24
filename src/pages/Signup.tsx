@@ -1,114 +1,152 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+
+import { AppContent } from '../context/AppContext';
 import StepHeader from '../components/auth/StepHeader';
 import StepIndicator from '../components/auth/StepIndicator';
 import ChooseRoleStep from '../components/auth/steps/ChooseRoleStep';
 import BasicInfoStep from '../components/auth/steps/BasicInfoStep';
-import ContactInfoStep from '../components/auth/steps/ContactInfoStep';
 import OTPStep from '../components/auth/steps/OTPStep';
-import BioStep from '../components/auth/steps/BioStep';
+import SecurityStep from '../components/auth/steps/SecurityStep';
+import BiodataStep from '../components/auth/steps/BiodataStep';
 
-interface SignupFormData {
-  role: string;
-  firstName: string;
-  lastName: string;
+export interface SignupFormData {
+  role: 'individual' | 'business' | '';
+  firstname: string;
+  lastname: string;
   email: string;
-  phoneNumber: string;
-  nin: string;
-  institution: string;
-  fieldOfStudy: string;
   password: string;
+  bio?: string;
+  age?: number;
+  country?: string;
+  jobTitle?: string;
 }
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { backendUrl, setIsLoggedin, getUserData } = useContext(AppContent);
+
   const [currentStep, setCurrentStep] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [formData, setFormData] = useState<SignupFormData>({
     role: '',
-    firstName: '',
-    lastName: '',
+    firstname: '',
+    lastname: '',
     email: '',
-    phoneNumber: '',
-    nin: '',
-    institution: '',
-    fieldOfStudy: '',
     password: '',
+    bio: '',
+    age: undefined,
+    country: 'Nigeria',
+    jobTitle: '',
   });
 
   const totalSteps = 5;
 
-  const handleNext = () => {
-    if (currentStep < totalSteps - 1) {
-      setCurrentStep(currentStep + 1);
+  const next = () => setCurrentStep((s) => Math.min(s + 1, totalSteps - 1));
+  const back = () => setCurrentStep((s) => Math.max(s - 1, 0));
+
+  const update = (data: Partial<SignupFormData>) =>
+    setFormData((prev) => ({ ...prev, ...data }));
+
+  const completeSignup = async () => {
+    if (isSubmitting) return;
+
+    try {
+      setIsSubmitting(true);
+
+      // Combine firstname and lastname to create name
+      const name = `${formData.firstname} ${formData.lastname}`.trim();
+
+      // Prepare the payload
+      const payload = {
+        name,
+        email: formData.email,
+        password: formData.password,
+        age: formData.age,
+        jobTitle: formData.jobTitle,
+        country: formData.country,
+        bio: formData.bio,
+      };
+
+      console.log('FINAL PAYLOAD →', payload);
+
+      axios.defaults.withCredentials = true;
+
+      const { data } = await axios.post(backendUrl + '/auth/register', payload);
+
+      if (data.success) {
+        toast.success(data.message || 'Account created successfully!');
+        setIsLoggedin(true);
+        await getUserData();
+        navigate('/authentication/welcome');
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error: any) {
+      const message = error.response?.data?.message || 'Registration failed';
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-
-  const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const handleComplete = () => {
-    // Handle registration completion
-    console.log('Registration completed:', formData);
-    navigate('/authentication/welcome');
-  };
-
-  const updateFormData = (data: Partial<SignupFormData>) => {
-    setFormData({ ...formData, ...data });
   };
 
   return (
     <div className='w-full'>
-      <StepHeader currentStep={currentStep} onBack={handleBack} />
+      <StepHeader currentStep={currentStep} onBack={back} />
 
       <AnimatePresence mode='wait'>
         {currentStep === 0 && (
           <ChooseRoleStep
             selectedRole={formData.role}
-            onSelectRole={(role) => updateFormData({ role })}
-            onContinue={handleNext}
+            onSelectRole={(role) => update({ role })}
+            onContinue={next}
           />
         )}
 
         {currentStep === 1 && (
           <BasicInfoStep
             formData={{
-              firstName: formData.firstName,
-              lastName: formData.lastName,
+              firstName: formData.firstname,
+              lastName: formData.lastname,
               email: formData.email,
             }}
-            onUpdate={(data) => updateFormData(data)}
-            onContinue={handleNext}
+            onUpdate={(data) => {
+              update({
+                firstname: data.firstName,
+                lastname: data.lastName,
+                email: data.email,
+              });
+            }}
+            onContinue={next}
           />
         )}
 
         {currentStep === 2 && (
-          <ContactInfoStep
-            formData={{
-              phoneNumber: formData.phoneNumber,
-              nin: formData.nin,
-            }}
-            onUpdate={(data) => updateFormData(data)}
-            onContinue={handleNext}
-          />
+          <OTPStep email={formData.email} onSkip={next} onContinue={next} />
         )}
 
         {currentStep === 3 && (
-          <OTPStep email={formData.email} onContinue={handleNext} />
+          <SecurityStep
+            formData={{ password: formData.password, bio: formData.bio }}
+            onUpdate={update}
+            onContinue={next}
+          />
         )}
 
         {currentStep === 4 && (
-          <BioStep
+          <BiodataStep
             formData={{
-              institution: formData.institution,
-              fieldOfStudy: formData.fieldOfStudy,
-              password: formData.password,
+              age: formData.age,
+              country: formData.country,
+              jobTitle: formData.jobTitle,
             }}
-            onUpdate={(data) => updateFormData(data)}
-            onComplete={handleComplete}
+            onUpdate={update}
+            onComplete={completeSignup}
+            isSubmitting={isSubmitting}
           />
         )}
       </AnimatePresence>
