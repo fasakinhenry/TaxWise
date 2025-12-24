@@ -131,19 +131,51 @@ const Profile: React.FC = () => {
                 </div>
               </div>
 
-              <div className='flex items-start gap-3'>
-                <Calendar className='text-gray-400 mt-1' size={20} />
-                <div>
-                  <p className='text-sm text-gray-500'>Member Since</p>
-                  <p className='text-gray-900 font-medium'>
-                    {new Date().toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </p>
+              {userData.age && (
+                <div className='flex items-start gap-3'>
+                  <Calendar className='text-gray-400 mt-1' size={20} />
+                  <div>
+                    <p className='text-sm text-gray-500'>Age</p>
+                    <p className='text-gray-900 font-medium'>
+                      {userData.age} years
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {userData.country && (
+                <div className='flex items-start gap-3'>
+                  <Calendar className='text-gray-400 mt-1' size={20} />
+                  <div>
+                    <p className='text-sm text-gray-500'>Country</p>
+                    <p className='text-gray-900 font-medium'>
+                      {userData.country}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {userData.jobTitle && (
+                <div className='flex items-start gap-3'>
+                  <User className='text-gray-400 mt-1' size={20} />
+                  <div>
+                    <p className='text-sm text-gray-500'>Job Title</p>
+                    <p className='text-gray-900 font-medium'>
+                      {userData.jobTitle}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {userData.bio && (
+                <div className='flex items-start gap-3'>
+                  <User className='text-gray-400 mt-1' size={20} />
+                  <div>
+                    <p className='text-sm text-gray-500'>Bio</p>
+                    <p className='text-gray-900 font-medium'>{userData.bio}</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
