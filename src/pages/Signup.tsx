@@ -82,7 +82,8 @@ const Signup = () => {
         toast.success(data.message || 'Account created successfully!');
         setIsLoggedin(true);
         await getUserData();
-        navigate('/authentication/welcome');
+        // Move to OTP verification step
+        next();
       } else {
         toast.error(data.message);
       }
@@ -126,10 +127,6 @@ const Signup = () => {
         )}
 
         {currentStep === 2 && (
-          <OTPStep email={formData.email} onSkip={next} onContinue={next} />
-        )}
-
-        {currentStep === 3 && (
           <SecurityStep
             formData={{ password: formData.password, bio: formData.bio }}
             onUpdate={update}
@@ -137,7 +134,7 @@ const Signup = () => {
           />
         )}
 
-        {currentStep === 4 && (
+        {currentStep === 3 && (
           <BiodataStep
             formData={{
               age: formData.age,
@@ -147,6 +144,14 @@ const Signup = () => {
             onUpdate={update}
             onComplete={completeSignup}
             isSubmitting={isSubmitting}
+          />
+        )}
+
+        {currentStep === 4 && (
+          <OTPStep
+            email={formData.email}
+            onSkip={() => navigate('/authentication/welcome')}
+            onContinue={() => navigate('/authentication/welcome')}
           />
         )}
       </AnimatePresence>
