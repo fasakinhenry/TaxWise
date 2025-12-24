@@ -5,6 +5,7 @@ import { HiMenu, HiX, HiChevronDown } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 import axios from 'axios';
+import type { AxiosError } from 'axios';
 import { AppContent } from '../../context/AppContext';
 import { toast } from 'react-toastify';
 
@@ -91,7 +92,8 @@ const Navbar: React.FC = () => {
         navigate('/');
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      const axiosError = error as AxiosError<{ message: string }>;
+      toast.error(axiosError.response?.data?.message || 'Logout failed');
     } finally {
       setIsLoggingOut(false);
     }
@@ -111,7 +113,8 @@ const Navbar: React.FC = () => {
         navigate('/authentication/email-verify');
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      const axiosError = error as AxiosError<{ message: string }>;
+      toast.error(axiosError.response?.data?.message || 'Failed to send OTP');
     } finally {
       setIsSendingOtp(false);
     }
