@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { AppContent } from '../../../context/AppContext';
 
 interface OTPStepProps {
   email: string;
-  onContinue: (otp: string) => Promise<void> | void;
+  onContinue: () => void;
   onSkip: () => void;
 }
 
@@ -11,14 +14,22 @@ const OTP_LENGTH = 6;
 const RESEND_DELAY = 60;
 
 const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
+  const { backendUrl } = useContext(AppContent);
+
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(''));
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(RESEND_DELAY);
+  const [sendingOtp, setSendingOtp] = useState(false);
 
   const inputRefs = Array.from({ length: OTP_LENGTH }, () =>
     useRef<HTMLInputElement>(null)
   );
+
+  // Send OTP on component mount
+  useEffect(() => {
+    sendOTP();
+  }, []);
 
   /* Countdown */
   useEffect(() => {
@@ -34,6 +45,29 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [otp]);
+
+  const sendOTP = async () => {
+    if (sendingOtp) return;
+
+    try {
+      setSendingOtp(true);
+      axios.defaults.withCredentials = true;
+
+      const { data } = await axios.post(backendUrl + '/auth/send-verify-otp');
+
+      if (data.success) {
+        toast.success(data.message || 'Verification code sent to your email');
+      } else {
+        toast.error(data.message || 'Failed to send verification code');
+      }
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message || 'Failed to send verification code';
+      toast.error(message);
+    } finally {
+      setSendingOtp(false);
+    }
+  };
 
   const handleChange = (index: number, value: string) => {
     if (!/^\d?$/.test(value)) return;
@@ -85,11 +119,26 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
     try {
       setLoading(true);
       setError('');
-      await onContinue(code);
-    } catch (err: any) {
-      setError(
-        err?.message || 'Invalid or expired code. Please check and try again.'
-      );
+
+      axios.defaults.withCredentials = true;
+
+      const { data } = await axios.post(backendUrl + '/auth/verify-email', {
+        otp: code,
+      });
+
+      if (data.success) {
+        toast.success(data.message || 'Email verified successfully!');
+        onContinue();
+      } else {
+        setError(data.message || 'Invalid verification code');
+        setOtp(Array(OTP_LENGTH).fill(''));
+        inputRefs[0].current?.focus();
+      }
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message ||
+        'Invalid or expired code. Please try again.';
+      setError(message);
       setOtp(Array(OTP_LENGTH).fill(''));
       inputRefs[0].current?.focus();
     } finally {
@@ -97,12 +146,15 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
     }
   };
 
-  const handleResend = () => {
+  const handleResend = async () => {
+    if (sendingOtp || resendTimer > 0) return;
+
     setResendTimer(RESEND_DELAY);
     setOtp(Array(OTP_LENGTH).fill(''));
     setError('');
     inputRefs[0].current?.focus();
-    // 👉 trigger resend API here
+
+    await sendOTP();
   };
 
   return (
@@ -137,10 +189,12 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
+              disabled={loading || sendingOtp}
               className='w-14 h-16 text-center text-2xl font-semibold
                 border-2 border-gray-300 rounded-xl
                 focus:outline-none focus:ring-2 focus:ring-teal-600
-                focus:border-transparent transition-all'
+                focus:border-transparent transition-all
+                disabled:bg-gray-100 disabled:cursor-not-allowed'
             />
           ))}
         </div>
@@ -168,14 +222,15 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
             ) : (
               <button
                 onClick={handleResend}
-                className='font-medium hover:underline'
+                disabled={sendingOtp}
+                className='font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed'
               >
-                Resend code
+                {sendingOtp ? 'Sending...' : 'Resend code'}
               </button>
             )}
           </p>
           <p className='text-xs text-gray-600 mt-1'>
-            Didn’t get it? Check your Spam or Junk folder.
+            Didn't get it? Check your Spam or Junk folder.
           </p>
         </div>
       </div>
@@ -183,18 +238,27 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
       {/* Verify */}
       <button
         onClick={handleVerify}
-        disabled={loading || !otp.every(Boolean)}
+        disabled={loading || !otp.every(Boolean) || sendingOtp}
         className='w-full bg-teal-700 hover:bg-teal-800
           disabled:bg-gray-300 disabled:cursor-not-allowed
-          text-white font-medium py-4 rounded-xl transition-colors mb-4'
+          text-white font-medium py-4 rounded-xl transition-colors mb-4
+          flex items-center justify-center gap-2'
       >
-        {loading ? 'Verifying…' : 'Verify'}
+        {loading ? (
+          <>
+            <div className='w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
+            Verifying…
+          </>
+        ) : (
+          'Verify'
+        )}
       </button>
 
       {/* Skip */}
       <button
         onClick={onSkip}
-        className='w-full text-sm text-gray-600 underline'
+        disabled={loading || sendingOtp}
+        className='w-full text-sm text-gray-600 underline hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed'
       >
         Verify later — skip for now
       </button>
