@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useRef } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaRobot, FaSearch } from 'react-icons/fa';
 import { HiMenu, HiX, HiChevronDown } from 'react-icons/hi';
@@ -29,7 +29,6 @@ const dropdownVariants: Variants = {
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { backendUrl, userData, setUserData, setIsLoggedin } =
     useContext(AppContent);
@@ -45,26 +44,6 @@ const Navbar: React.FC = () => {
   const isAuthenticated = userData !== null && userData !== undefined;
   const firstName = userData ? userData.name.split(' ')[0] : '';
   const firstLetter = userData ? firstName.charAt(0).toUpperCase() : '';
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setShowUserMenu(false);
-      }
-    };
-
-    if (showUserMenu) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showUserMenu]);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -136,75 +115,82 @@ const Navbar: React.FC = () => {
   const UserDropdown = () => (
     <AnimatePresence>
       {showUserMenu && userData && (
-        <motion.div
-          ref={dropdownRef}
-          variants={dropdownVariants}
-          initial='hidden'
-          animate='visible'
-          exit='exit'
-          className='absolute right-0 mt-3 w-56 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden pointer-events-auto'
-          style={{ zIndex: 9999 }}
-        >
-          <div className='px-4 py-3 border-b border-gray-100'>
-            <p className='text-sm font-semibold text-gray-900'>
-              {userData.name}
-            </p>
-            <p className='text-xs text-gray-500 truncate'>{userData.email}</p>
-          </div>
+        <>
+          {/* Backdrop */}
+          <div
+            className='fixed inset-0 z-30'
+            onClick={() => setShowUserMenu(false)}
+          />
 
-          <ul className='py-1'>
-            {!userData.isVerified && (
+          {/* Dropdown */}
+          <motion.div
+            variants={dropdownVariants}
+            initial='hidden'
+            animate='visible'
+            exit='exit'
+            className='absolute right-0 mt-3 w-56 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden pointer-events-auto z-40'
+          >
+            <div className='px-4 py-3 border-b border-gray-100'>
+              <p className='text-sm font-semibold text-gray-900'>
+                {userData.name}
+              </p>
+              <p className='text-xs text-gray-500 truncate'>{userData.email}</p>
+            </div>
+
+            <ul className='py-1'>
+              {!userData.isVerified && (
+                <li>
+                  <button
+                    onClick={sendVerificationOtp}
+                    disabled={isSendingOtp}
+                    className='w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors flex items-center justify-between disabled:opacity-50 disabled:cursor-not-allowed'
+                  >
+                    <span className='text-amber-600 font-medium'>
+                      Verify Email
+                    </span>
+                    {!userData.isVerified && (
+                      <span className='w-2 h-2 bg-amber-500 rounded-full'></span>
+                    )}
+                  </button>
+                </li>
+              )}
+
               <li>
                 <button
-                  onClick={sendVerificationOtp}
-                  disabled={isSendingOtp}
-                  className='w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors flex items-center justify-between disabled:opacity-50 disabled:cursor-not-allowed'
+                  onClick={() => {
+                    setShowUserMenu(false);
+                    navigate('/profile');
+                  }}
+                  className='w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors'
                 >
-                  <span className='text-amber-600 font-medium'>
-                    Verify Email
-                  </span>
-                  {!userData.isVerified && (
-                    <span className='w-2 h-2 bg-amber-500 rounded-full'></span>
-                  )}
+                  Profile
                 </button>
               </li>
-            )}
 
-            <li>
+              <li>
+                <button
+                  onClick={() => {
+                    setShowUserMenu(false);
+                    navigate('/settings');
+                  }}
+                  className='w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors'
+                >
+                  Settings
+                </button>
+              </li>
+            </ul>
+
+            <div className='border-t border-gray-100'>
               <button
-                onClick={() => {
-                  setShowUserMenu(false);
-                  navigate('/profile');
-                }}
-                className='w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors'
+                onClick={logout}
+                disabled={isLoggingOut}
+                className='w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
               >
-                Profile
+                {isLoggingOut ? 'Logging out...' : 'Logout'}
               </button>
-            </li>
-
-            <li>
-              <button
-                onClick={() => {
-                  setShowUserMenu(false);
-                  navigate('/settings');
-                }}
-                className='w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors'
-              >
-                Settings
-              </button>
-            </li>
-          </ul>
-
-          <div className='border-t border-gray-100'>
-            <button
-              onClick={logout}
-              disabled={isLoggingOut}
-              className='w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
-            >
-              {isLoggingOut ? 'Logging out...' : 'Logout'}
-            </button>
-          </div>
-        </motion.div>
+            </div>
+          </motion.div>
+        </>
       )}
     </AnimatePresence>
   );
@@ -259,7 +245,7 @@ const Navbar: React.FC = () => {
                 Login
               </Link>
             ) : (
-              <div className='relative' ref={dropdownRef}>
+              <div className='relative'>
                 <button
                   onClick={toggleUserMenu}
                   className='flex items-center gap-2 hover:opacity-80 transition-opacity'
