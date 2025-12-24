@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface OTPStepProps {
   email: string;
-  onContinue: () => void;
+  onContinue: (otp: string) => Promise<void> | void;
   onSkip: () => void;
 }
 
@@ -13,6 +13,7 @@ const RESEND_DELAY = 60;
 const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(''));
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(RESEND_DELAY);
 
   const inputRefs = Array.from({ length: OTP_LENGTH }, () =>
@@ -22,11 +23,18 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
   /* Countdown */
   useEffect(() => {
     if (resendTimer <= 0) return;
-    const timer = setTimeout(() => setResendTimer((t) => t - 1), 1000);
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => setResendTimer((s) => s - 1), 1000);
+    return () => clearTimeout(t);
   }, [resendTimer]);
 
-  /* Input change */
+  /* Auto-submit when complete */
+  useEffect(() => {
+    if (otp.every(Boolean)) {
+      handleVerify();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [otp]);
+
   const handleChange = (index: number, value: string) => {
     if (!/^\d?$/.test(value)) return;
 
@@ -40,42 +48,62 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
     }
   };
 
-  /* Backspace navigation */
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
       inputRefs[index - 1].current?.focus();
     }
+
+    if (e.key === 'ArrowLeft' && index > 0) {
+      inputRefs[index - 1].current?.focus();
+    }
+
+    if (e.key === 'ArrowRight' && index < OTP_LENGTH - 1) {
+      inputRefs[index + 1].current?.focus();
+    }
   };
 
-  /* Paste support */
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    const pasted = e.clipboardData.getData('text').slice(0, OTP_LENGTH);
-    if (!/^\d+$/.test(pasted)) return;
+    const pasted = e.clipboardData
+      .getData('text')
+      .replace(/\D/g, '')
+      .slice(0, OTP_LENGTH);
 
-    const next = pasted.split('').slice(0, OTP_LENGTH);
+    if (!pasted) return;
+
+    const next = pasted.split('');
     setOtp([...next, ...Array(OTP_LENGTH - next.length).fill('')]);
     inputRefs[Math.min(next.length, OTP_LENGTH - 1)].current?.focus();
   };
 
-  /* Verify */
-  const handleVerify = () => {
-    if (otp.join('').length !== OTP_LENGTH) {
-      setError('OTP must be 6 digits. Please check and try again.');
-      return;
+  const handleVerify = async () => {
+    if (loading) return;
+
+    const code = otp.join('');
+    if (code.length !== OTP_LENGTH) return;
+
+    try {
+      setLoading(true);
+      setError('');
+      await onContinue(code);
+    } catch (err: any) {
+      setError(
+        err?.message || 'Invalid or expired code. Please check and try again.'
+      );
+      setOtp(Array(OTP_LENGTH).fill(''));
+      inputRefs[0].current?.focus();
+    } finally {
+      setLoading(false);
     }
-    onContinue();
   };
 
-  /* Resend */
   const handleResend = () => {
     setResendTimer(RESEND_DELAY);
     setOtp(Array(OTP_LENGTH).fill(''));
     setError('');
     inputRefs[0].current?.focus();
+    // 👉 trigger resend API here
   };
-
-  const isComplete = otp.every(Boolean);
 
   return (
     <motion.div
@@ -85,32 +113,34 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
       transition={{ duration: 0.3 }}
     >
       {/* Header */}
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <h1 className='text-3xl font-bold text-gray-900 mb-2'>
         Verify your email
       </h1>
-      <p className="text-gray-600 mb-8">
+      <p className='text-gray-600 mb-8'>
         We sent a 6-digit code to{' '}
-        <span className="font-medium text-gray-900">{email}</span>
+        <span className='font-medium text-gray-900'>{email}</span>
       </p>
 
-      {/* OTP Inputs */}
-      <div className="mb-6">
-        <div className="flex gap-3 justify-center mb-4">
+      {/* OTP */}
+      <div className='mb-6'>
+        <div className='flex gap-3 justify-center mb-4'>
           {otp.map((digit, index) => (
             <input
               key={index}
               ref={inputRefs[index]}
-              type="text"
-              inputMode="numeric"
+              autoFocus={index === 0}
+              type='text'
+              inputMode='numeric'
               maxLength={1}
+              aria-label={`OTP digit ${index + 1}`}
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
-              className="w-14 h-16 text-center text-2xl font-semibold
+              className='w-14 h-16 text-center text-2xl font-semibold
                 border-2 border-gray-300 rounded-xl
                 focus:outline-none focus:ring-2 focus:ring-teal-600
-                focus:border-transparent transition-all"
+                focus:border-transparent transition-all'
             />
           ))}
         </div>
@@ -120,15 +150,15 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-sm text-red-500 text-center mb-4"
+            className='text-sm text-red-500 text-center mb-4'
           >
             {error}
           </motion.p>
         )}
 
         {/* Resend */}
-        <div className="bg-teal-50 border border-teal-200 rounded-xl p-4 text-center">
-          <p className="text-sm text-teal-700">
+        <div className='bg-teal-50 border border-teal-200 rounded-xl p-4 text-center'>
+          <p className='text-sm text-teal-700'>
             {resendTimer > 0 ? (
               <>
                 Resend code in{' '}
@@ -138,13 +168,13 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
             ) : (
               <button
                 onClick={handleResend}
-                className="font-medium hover:underline"
+                className='font-medium hover:underline'
               >
                 Resend code
               </button>
             )}
           </p>
-          <p className="text-xs text-gray-600 mt-1">
+          <p className='text-xs text-gray-600 mt-1'>
             Didn’t get it? Check your Spam or Junk folder.
           </p>
         </div>
@@ -153,34 +183,21 @@ const OTPStep = ({ email, onContinue, onSkip }: OTPStepProps) => {
       {/* Verify */}
       <button
         onClick={handleVerify}
-        disabled={!isComplete}
-        className="w-full bg-teal-700 hover:bg-teal-800
+        disabled={loading || !otp.every(Boolean)}
+        className='w-full bg-teal-700 hover:bg-teal-800
           disabled:bg-gray-300 disabled:cursor-not-allowed
-          text-white font-medium py-4 rounded-xl transition-colors mb-4"
+          text-white font-medium py-4 rounded-xl transition-colors mb-4'
       >
-        Verify
+        {loading ? 'Verifying…' : 'Verify'}
       </button>
 
       {/* Skip */}
       <button
         onClick={onSkip}
-        className="w-full text-sm text-gray-600 underline"
+        className='w-full text-sm text-gray-600 underline'
       >
         Verify later — skip for now
       </button>
-
-      {/* Footer */}
-      <div className="mt-6 text-center">
-        <span className="text-sm text-gray-600">
-          Already have an account?{' '}
-        </span>
-        <a
-          href="/authentication/signin"
-          className="text-sm text-teal-700 hover:text-teal-800 font-medium"
-        >
-          Login
-        </a>
-      </div>
     </motion.div>
   );
 };
