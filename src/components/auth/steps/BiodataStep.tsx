@@ -11,9 +11,15 @@ interface Props {
   formData: BiodataFormData;
   onUpdate: (d: Partial<BiodataFormData>) => void;
   onComplete: () => void;
+  isSubmitting?: boolean;
 }
 
-const BiodataStep = ({ formData, onUpdate, onComplete }: Props) => {
+const BiodataStep = ({
+  formData,
+  onUpdate,
+  onComplete,
+  isSubmitting,
+}: Props) => {
   const [localData, setLocalData] = useState<BiodataFormData>(formData);
 
   const handleChange = <K extends keyof BiodataFormData>(
@@ -33,25 +39,23 @@ const BiodataStep = ({ formData, onUpdate, onComplete }: Props) => {
       transition={{ duration: 0.3 }}
     >
       {/* Header */}
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">
-        Biodata
-      </h1>
-      <p className="text-gray-600 mb-8">
+      <h1 className='text-3xl font-bold text-gray-900 mb-2'>Biodata</h1>
+      <p className='text-gray-600 mb-8'>
         Optional — helps us personalize your experience
       </p>
 
-      <div className="space-y-5 mb-8">
+      <div className='space-y-5 mb-8'>
         {/* Age */}
         <div>
           <label
-            htmlFor="age"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            htmlFor='age'
+            className='block text-sm font-medium text-gray-700 mb-2'
           >
             Age
           </label>
           <input
-            type="number"
-            id="age"
+            type='number'
+            id='age'
             min={0}
             value={localData.age ?? ''}
             onChange={(e) =>
@@ -60,54 +64,57 @@ const BiodataStep = ({ formData, onUpdate, onComplete }: Props) => {
                 e.target.value ? Number(e.target.value) : undefined
               )
             }
-            placeholder="e.g. 24"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl
+            placeholder='e.g. 24'
+            disabled={isSubmitting}
+            className='w-full px-4 py-3 border border-gray-300 rounded-xl
               focus:outline-none focus:ring-2 focus:ring-teal-600
-              focus:border-transparent transition-all"
+              focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed'
           />
         </div>
 
         {/* Job Title */}
         <div>
           <label
-            htmlFor="jobTitle"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            htmlFor='jobTitle'
+            className='block text-sm font-medium text-gray-700 mb-2'
           >
             Job Title
           </label>
           <input
-            type="text"
-            id="jobTitle"
+            type='text'
+            id='jobTitle'
             value={localData.jobTitle ?? ''}
             onChange={(e) =>
               handleChange('jobTitle', e.target.value || undefined)
             }
-            placeholder="e.g. Software Engineer"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl
+            placeholder='e.g. Software Engineer'
+            disabled={isSubmitting}
+            className='w-full px-4 py-3 border border-gray-300 rounded-xl
               focus:outline-none focus:ring-2 focus:ring-teal-600
-              focus:border-transparent transition-all"
+              focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed'
           />
         </div>
 
         {/* Country */}
         <div>
           <label
-            htmlFor="country"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            htmlFor='country'
+            className='block text-sm font-medium text-gray-700 mb-2'
           >
             Country
           </label>
           <input
-            type="text"
-            id="country"
+            type='text'
+            id='country'
             value={localData.country ?? ''}
             onChange={(e) =>
               handleChange('country', e.target.value || undefined)
             }
-            placeholder="e.g. Nigeria"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl
+            placeholder='e.g. Nigeria'
+            disabled={isSubmitting}
+            className='w-full px-4 py-3 border border-gray-300 rounded-xl
               focus:outline-none focus:ring-2 focus:ring-teal-600
-              focus:border-transparent transition-all"
+              focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed'
           />
         </div>
       </div>
@@ -115,10 +122,20 @@ const BiodataStep = ({ formData, onUpdate, onComplete }: Props) => {
       {/* CTA */}
       <button
         onClick={onComplete}
-        className="w-full bg-teal-700 hover:bg-teal-800
-          text-white font-medium py-4 rounded-xl transition-colors"
+        disabled={isSubmitting}
+        className='w-full bg-teal-700 hover:bg-teal-800
+          text-white font-medium py-4 rounded-xl transition-colors
+          disabled:opacity-50 disabled:cursor-not-allowed
+          flex items-center justify-center gap-3'
       >
-        Finish
+        {isSubmitting ? (
+          <>
+            <div className='w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
+            Creating Account...
+          </>
+        ) : (
+          'Finish'
+        )}
       </button>
     </motion.div>
   );
